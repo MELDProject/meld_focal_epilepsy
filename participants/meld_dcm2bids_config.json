@@ -1,0 +1,148 @@
+{
+    "descriptions": [
+        {
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "3T_preop",
+        "criteria": {
+            "SidecarFilename": "*3T.t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "3T_postop",
+        "criteria": {
+            "SidecarFilename": "*3T.postop_t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T2",
+        "customLabels": "3T_preop",
+        "criteria": {
+            "SidecarFilename": "*3T.t2*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "FLAIR",
+        "customLabels": "3T_preop",
+        "criteria": {
+            "SidecarFilename": "*3T.flair*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "FA",
+        "customLabels": "3T_preop",
+        "criteria": {
+            "SidecarFilename": "*3T.fa*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "MD",
+        "customLabels": "3T_preop",
+        "criteria": {
+            "SidecarFilename": "*3T.md*"
+            }
+        },
+	{
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "15T_preop",
+        "criteria": {
+            "SidecarFilename": "*15T.t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "15T_postop",
+        "criteria": {
+            "SidecarFilename": "*15T.postop_t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T2",
+        "customLabels": "15T_preop",
+        "criteria": {
+            "SidecarFilename": "*15T.t2*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "FLAIR",
+        "customLabels": "15T_preop",
+        "criteria": {
+            "SidecarFilename": "*15T.flair*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "FA",
+        "customLabels": "15T_preop",
+        "criteria": {
+            "SidecarFilename": "*15T.fa*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "MD",
+        "customLabels": "15T_preop",
+        "criteria": {
+            "SidecarFilename": "*15T.md*"
+            }
+        },
+	{
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "7T_preop",
+        "criteria": {
+            "SidecarFilename": "*7T.t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T1",
+        "customLabels": "7T_postop",
+        "criteria": {
+            "SidecarFilename": "*7T.postop_t1*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "T2",
+        "customLabels": "7T_preop",
+        "criteria": {
+            "SidecarFilename": "*7T.t2*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "FLAIR",
+        "customLabels": "7T_preop",
+        "criteria": {
+            "SidecarFilename": "*7T.flair*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "FA",
+        "customLabels": "7T_preop",
+        "criteria": {
+            "SidecarFilename": "*7T.fa*"
+            }
+        },
+	{	
+        "dataType": "dwi",
+        "modalityLabel": "MD",
+        "customLabels": "7T_preop",
+        "criteria": {
+            "SidecarFilename": "*7T.md*"
+            }
+        }
+    ]
+}
