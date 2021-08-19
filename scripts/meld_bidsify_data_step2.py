@@ -81,6 +81,9 @@ if __name__ == '__main__':
     parser.add_argument('-ids', '--list_participants',
                         help='Text file with participants ids to send',
                         required=True)
+    parser.add_argument('--nodeface',
+                        help='if flag, do not deface the NIFTI images',
+                        action="store_true")
     parser.add_argument('--nodel',
                         help='if flag, do not delete the meldbids folder after compression',
                         action="store_true")
@@ -148,8 +151,10 @@ if __name__ == '__main__':
                         print('WARNING: There should be only one nifti file. Check again and remove additional file.')
                     elif len(files_nii)==1:
                         f = files_nii[0] 
-                        command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
-#                         command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
+                        if args.nodeface==True:
+                            command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
+                        else:
+                            command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
                         try:   
                             sub.check_call(command, shell=True)
                             print(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
