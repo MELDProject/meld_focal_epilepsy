@@ -6,8 +6,8 @@ import argparse
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Script to bidsify MELD data. PART 1 : convert DICOMs into NIFTI')
-    parser.add_argument('-d','--part_dir', 
-                        help='path to participants directory', 
+    parser.add_argument('-d','--meld_folder', 
+                        help='path to the meld_focal_epilepsy folder', 
                         required=True)
     args = parser.parse_args()
 
@@ -16,9 +16,12 @@ if __name__ == '__main__':
     #information about meld_template 
     strengths=['15T', '3T', '7T']
     modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
-
+    
+    #get participants folder 
+    participants_folder = os.path.join(meld_folder,'participants')
+    
     #load list participants
-    participants = glob.glob(os.path.join(folder_participants,'MELD*'))
+    participants = glob.glob(os.path.join(folder_participants,'MELD_*'))
     participants = [os.path.basename(x) for x in participants]
 
     #print information
@@ -41,19 +44,16 @@ if __name__ == '__main__':
                     pass
                 else:
                     files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
-                    files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm'))
                     name_base = '.'.join([T,mod])
                     name_nii = name_base+'.nii'
                     if files_nii:
                         print(f'Nifti file already exist in folder {dcm_folder}')
-                    elif len(files_dcm)>1:  
+                    else:  
                         command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
                         f = os.path.join(dcm_folder,name_nii) 
                         try:
                             sub.check_call(command1, shell=True)
                         except:
-                            print('Error in converting dicom into nifti')
-                    else:
-                        pass
+                            print('Error in converting dicom into nifti. Check that your files are DICOMs format')
     #print information
     print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')
