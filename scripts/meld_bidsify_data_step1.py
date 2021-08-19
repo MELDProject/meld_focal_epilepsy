@@ -9,27 +9,17 @@ if __name__ == '__main__':
     parser.add_argument('-d','--part_dir', 
                         help='path to participants directory', 
                         required=True)
-    parser.add_argument('-ids', '--list_part',
-                        help='texte file with participants ids',
-                        required=False,
-                        default=os.getcwd())
     args = parser.parse_args()
 
     folder_participants= args.part_dir
-    list_participants = args.list_part
 
     #information about meld_template 
     strenghts=['15T', '3T', '7T']
     modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
 
     #load list participants
-    if list_participants :
-        f = open(list_participants, 'r')
-        participants = f.readlines()
-        participants = [x.strip() for x in participants]
-    else:
-        participants = glob.glob(os.path.join(folder_participants,'MELD*'))
-        participants = [os.path.basename(x) for x in participants]
+    participants = glob.glob(os.path.join(folder_participants,'MELD*'))
+    participants = [os.path.basename(x) for x in participants]
 
     #print information
     print('MELD_bidsify STEP 1 : convert dicoms into nifti')
@@ -50,19 +40,17 @@ if __name__ == '__main__':
                 if not os.listdir(dcm_folder):
                     pass
                 else:
-                    files_nii=glob.glob(os.path.join(dcm_folder,'*.nii'))
+                    files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
                     files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm'))
                     name_base = '.'.join([T,mod])
                     name_nii = name_base+'.nii'
                     if files_nii:
                         print(f'Nifti file already exist in folder {dcm_folder}')
-                        pass
                     elif len(files_dcm)>1:  
                         command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
                         f = os.path.join(dcm_folder,name_nii) 
                         try:
                             sub.check_call(command1, shell=True)
-                            print(f'convert dicom into nifi {f}')
                         except:
                             print('Error in converting dicom into nifti')
                     else:
