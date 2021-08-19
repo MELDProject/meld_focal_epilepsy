@@ -14,7 +14,7 @@ if __name__ == '__main__':
     folder_participants= args.part_dir
 
     #information about meld_template 
-    strenghts=['15T', '3T', '7T']
+    strengths=['15T', '3T', '7T']
     modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
 
     #load list participants
@@ -32,7 +32,7 @@ if __name__ == '__main__':
         path = os.path.join(folder_participants, participant)
 
         #loop over each folder in meld_template and convert dicoms into nifti when exist
-        for T in strenghts:
+        for T in strengths:
             for mod in modalities:
                 dcm_folder=os.path.join(path,T,mod)
                 if not os.path.isdir(dcm_folder):
@@ -56,4 +56,4 @@ if __name__ == '__main__':
                     else:
                         pass
     #print information
-    print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the right folder')
+    print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')
