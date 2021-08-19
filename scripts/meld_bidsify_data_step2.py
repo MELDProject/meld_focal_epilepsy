@@ -4,6 +4,8 @@ import glob
 import json
 import argparse
 import pandas as pd
+import shutil
+from datetime import datetime
 
 
 #functions
@@ -73,23 +75,33 @@ def create_json_file(name, info):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Script to bidsify MELD data. PART 1 : convert DICOMs into NIFTI')
-    parser.add_argument('-d','--participants_directory', 
-                        help='Path to participants directory', 
+    parser.add_argument('-d','--meld_folder', 
+                        help='Path to the meld_focal_epilepsy folder', 
                         required=True)
     parser.add_argument('-ids', '--list_participants',
                         help='Text file with participants ids to send',
                         required=True)
+    parser.add_argument('--nodel',
+                        help='if flag, do not delete the meldbids folder after compression',
+                        action="store_true")
     args = parser.parse_args()
 
-    folder_participants= args.participants_directory
+    meld_folder= args.meld_folder
     list_participants = args.list_participants
 
     #information about meld_template 
     strenghts=['15T', '3T', '7T']
     modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
     
-    #create a temporary folder to store nifti and json file for dcm2bids
-    tmp_folder = os.path.join(folder_participants,'tmp', 'tmp_dcm2bids')
+    #create a meldBIDS folder with today date
+    now =  datetime.now()
+    date = now.strftime("%d%m%Y")
+    bids_folder = os.path.join(meld_folder,'meld_bids',f'meldbids_{date}')
+    if not os.path.exists(bids_folder):
+            os.makedirs(bids_folder)
+
+    #folder to store nifti and json file for dcm2bids
+    tmp_folder = os.path.join(bids_folder, 'tmp_dcm2bids')
     if not os.path.exists(tmp_folder):
             os.makedirs(tmp_folder)
 
@@ -100,6 +112,9 @@ if __name__ == '__main__':
     #print information
     print('MELD_bidsify STEP 2 : Deface nifti, convert into BIDS format and create compressed batch files.')
     
+    #get participants folder 
+    participants_folder = path = os.path.join(meld_folder,'participants')
+    
     #loop over participants
     for participant in participants:
 
@@ -107,7 +122,7 @@ if __name__ == '__main__':
         participant_bids = harmonise_bids_name(participant)
 
         #load in path of the specific participant
-        path = os.path.join(folder_participants, participant)
+        path = os.path.join(participants_folder, participant)
 
         #create the temporary folder of the participants
         tmp_folder_participant= os.path.join(tmp_folder, 'sub-' + participant_bids)
@@ -133,8 +148,8 @@ if __name__ == '__main__':
                         print('WARNING: There should be only one nifti file. Check again and remove additional file.')
                     elif len(files_nii)==1:
                         f = files_nii[0] 
-#                         command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
-                        command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
+                        command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
+#                         command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
                         try:   
                             sub.check_call(command, shell=True)
                             print(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
@@ -162,16 +177,24 @@ if __name__ == '__main__':
 
 
         #convert in bids structure using dcm2bids
-        config_file = os.path.join(folder_participants,'meld_dcm2bids_config.json')
-        command=format(f'dcm2bids -d {folder_participants} -p {participant_bids} -c {config_file} -o {folder_participants}/tmp ')
+        config_file = os.path.join(meld_folder,'scripts','meld_dcm2bids_config.json')
+        command=format(f'dcm2bids -d {participants_folder} -p {participant_bids} -c {config_file} -o {bids_folder}')
         try:
             sub.check_call(command, shell=True)
             print('convert into bids structure')
         except:
             print('Error in converting in bids structure')
         
-        #compression in batch and send over
-        #zip_split function
+        #delete tmp folder 
+        shutil.rmtree(tmp_folder)
         
+        #compression in batch
+        print(f'Compress {bids_folder}')
+        command=format(f'zip -r {bids_folder} {bids_folder}; split -b 800M {bids_folder}.zip {bids_folder}/share_data_part')
+        sub.check_call(command, shell=True)
         
+        #delete meldbids folder if flag
+        if args.nodel==True:
+            shutil.rmtree(bids_folder)
+            
         print('End of STEP 2' )
