@@ -20,7 +20,7 @@ Libraries :
 
 
 ### Installation
-- [ ] Open a terminal and paste the following sentence : `https://github.com/mathrip/meld_focal_epilepsy.git`
+- [ ] Open a terminal and paste the following sentence : git clone https://github.com/mathrip/meld_focal_epilepsy.git
 Press enter. Your package will be installed. 
 - [ ] Install FSL :
 - [ ] Open a new terminal \
@@ -31,10 +31,10 @@ Your meld_focal_epilepsy package is ready to be used.
     a. Copy the meld_template folder and rename with the MELD participant ID \
     b. Fill the folders with DICOMS/NIFTI from the respective sequences available (e.g T1w sequence acquired at 3T should go into the MELD_participantID/3T/T1/ folder)
 2) Convert DICOMs into NIFTI. To launch the script, run \
-`meld_bidsify_data_step1.py -d <participants_directory>`
+python meld_bidsify_data_step1.py -d <participants_directory>
 3) Create the lesion mask from the NIFTI T1 volume if not already done. Save the lesion mask as NIFTI into the right folder.
 5) Convert NIFTI into BIDS format for the participants you which to send over. To launch the script, run \
-`meld_bidsify_data_step1.py -d <participants_directory> -ids <list_participants> [optional arguments]`
+python meld_bidsify_data_step1.py -d <participants_directory> -ids <list_participants> [optional arguments]
 
 where : 
   - <meld_folder> : the path to the "meld_focal_epilepsy" directory.
@@ -44,8 +44,8 @@ where :
     - --nodel (optional) : use this flag if you do not want to the temporary folder to be deleted 
 
 Exemples :
-- `python meld_bidsify_data_step1.py' -d '/home/documents/meld_focal_epilepsy/participants'`
-- `python meld_bidsify_data_step2.py' -d '/home/documents/meld_focal_epilepsy/participants' -ids '/home/documents/meld_focal_epilepsy/participants/list_participants_batch.csv'`
+- python meld_bidsify_data_step1.py -d /home/documents/meld_focal_epilepsy/participants'
+- python meld_bidsify_data_step2.py -d /home/documents/meld_focal_epilepsy/participants -ids /home/documents/meld_focal_epilepsy/participants/list_participants_batch.csv
 
 Notes : 
 - The whole process can take up to ???min for ??? data.
