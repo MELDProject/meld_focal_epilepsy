@@ -5,8 +5,8 @@
 ## Overview
 This program performs three steps :
  1. DICOMS TO NIFTI : Goes over the meld_template folder and convert DICOMs into NIFTI. Results save as nifti format (.nii). 
- 3. NIFTI TO BIDS : Data are copied over a temporary folder and defaced. Data are converted into BIDS format using dcm2bids.
- 4. COMPRESSION : BIDS folder is compressed and send over to the MELD team.
+ 2. NIFTI TO BIDS : Data are copied over a temporary folder and defaced. Data are converted into BIDS format using dcm2bids.
+ 3. COMPRESSION : BIDS folder is compressed and send over to the MELD team.
 
   
 ## Getting Started
@@ -43,9 +43,9 @@ where :
     - --nodeface : use this flag if you do not need to deface your NIFTI images.
     - --nodel (optional) : use this flag if you do not want to the temporary folder to be deleted 
 
-Exemples :
-- python meld_bidsify_data_step1.py -d /home/documents/meld_focal_epilepsy/participants'
-- python meld_bidsify_data_step2.py -d /home/documents/meld_focal_epilepsy/participants -ids /home/documents/meld_focal_epilepsy/participants/list_participants_batch.csv
+Examples :
+- python meld_bidsify_data_step1.py -d /home/documents/meld_focal_epilepsy/
+- python meld_bidsify_data_step2.py -d /home/documents/meld_focal_epilepsy/ -ids /home/documents/meld_focal_epilepsy/participants/list_participants_batch.csv
 
 Notes : 
 - The whole process can take up to ???min for ??? data.

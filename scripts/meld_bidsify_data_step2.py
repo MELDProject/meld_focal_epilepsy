@@ -159,7 +159,7 @@ if __name__ == '__main__':
                             sub.check_call(command, shell=True)
                             print(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
                         except:
-                            print('Error in defacing and copying nifti into temporary folder')
+                            print('Error in defacing and copying nifti into temporary folder, please make sure FSL is installed')
                         #if json file available copy it. If not create a fake one
                         if len(files_json)>1:
                             print('WARNING: There should be only one json file. Check again and remove additional file.')

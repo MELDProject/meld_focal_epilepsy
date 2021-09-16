@@ -47,7 +47,7 @@ if __name__ == '__main__':
                     name_base = '.'.join([T,mod])
                     name_nii = name_base+'.nii'
                     if files_nii:
-                        print(f'Nifti file already exist in folder {dcm_folder}')
+                        print(f'WARNING: Nifti file already exist in folder {dcm_folder}')
                     else:
                         command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
                         f = os.path.join(dcm_folder,name_nii) 
