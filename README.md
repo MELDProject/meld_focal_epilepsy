@@ -13,17 +13,17 @@ This program performs three steps :
 
 ### Prerequisites
 This program requires the following softwares and libraries : 
-- Python (version 3.7)\
-Libraries :
-   - dcm2bids
 - FSL 6.0
+- Anaconda
 
 
 ### Installation
 - [ ] Open a terminal and paste the following sentence : git clone https://github.com/mathrip/meld_focal_epilepsy.git
 Press enter. Your package will be installed. 
-- [ ] Install FSL :
+- [ ] Install FSL : ADD LINK TO INSTRUCTIONS
+- [ ] Install Anaconda: Add link to instructions
 - [ ] Open a new terminal \
+- [ ] ##ADD instructions for creating environment
 Your meld_focal_epilepsy package is ready to be used. 
 
 ## Usage
@@ -44,7 +44,11 @@ where :
     - --nodel (optional) : use this flag if you do not want to the temporary folder to be deleted 
 
 Examples :
+#Activate Anaconda environment
+- conda activate mfe_env
+#Run meld_bidsify scripts
 - python meld_bidsify_data_step1.py -d /home/documents/meld_focal_epilepsy/
+#Then create lesion masks
 - python meld_bidsify_data_step2.py -d /home/documents/meld_focal_epilepsy/ -ids /home/documents/meld_focal_epilepsy/participants/list_participants_batch.csv
 
 Notes : 
@@ -54,7 +58,7 @@ Notes :
 ## Authors
 
 **Konrad WAGSTYL** (UCL GOSICH, London)\
-**sophie ADLER** (UCL GOSICH, London)\
+**Sophie ADLER** (UCL GOSICH, London)\
 **Mathilde RIPART** (UCL GOSICH, London)\
 
 
