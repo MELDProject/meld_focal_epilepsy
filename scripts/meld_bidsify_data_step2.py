@@ -109,8 +109,9 @@ if __name__ == '__main__':
             os.makedirs(tmp_folder)
 
     #load participants from list 
-    f = pd.read_csv(list_participants, header=0)
-    participants = f['ids']
+    f = open(list_participants, 'r')
+    participants = f.readlines()
+    participants = [x.strip() for x in participants] 
     
     #print information
     print('MELD_bidsify STEP 2 : Deface nifti, convert into BIDS format and create compressed batch files.')
