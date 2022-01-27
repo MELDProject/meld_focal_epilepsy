@@ -2,6 +2,8 @@ import os
 import subprocess as sub
 import glob 
 import argparse
+import logging
+
 
 if __name__ == '__main__':
 
@@ -9,8 +11,14 @@ if __name__ == '__main__':
     parser.add_argument('-d','--meld_folder', 
                         help='path to the meld_focal_epilepsy folder', 
                         required=True)
+    parser.add_argument('-v','--verbose', 
+                        help='print issues',action='store_true',
+                         default=False, 
+                        )
     args = parser.parse_args()
-
+    QUIET =args.verbose
+    logging.basicConfig(level=logging.WARNING if QUIET else logging.INFO,
+                    format="%(message)s")
     meld_folder= args.meld_folder
 
     #information about meld_template 
