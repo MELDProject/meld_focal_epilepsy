@@ -36,18 +36,19 @@
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "FA",
+        "modalityLabel": "DWI",
         "customLabels": "3T_preop",
         "criteria": {
-            "SidecarFilename": "*3T.fa*"
+            "SidecarFilename": "*3T.dwi.*"
             }
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "MD",
+        "modalityLabel": "DWInegPE",
+	"suffix": "negPE",
         "customLabels": "3T_preop",
         "criteria": {
-            "SidecarFilename": "*3T.md*"
+            "SidecarFilename": "*3T.dwi_negPE*"
             }
         },
 	{
@@ -84,18 +85,18 @@
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "FA",
+        "modalityLabel": "DWI",
         "customLabels": "15T_preop",
         "criteria": {
-            "SidecarFilename": "*15T.fa*"
+            "SidecarFilename": "*15T.dwi.*"
             }
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "MD",
+        "modalityLabel": "DWInegPE",
         "customLabels": "15T_preop",
         "criteria": {
-            "SidecarFilename": "*15T.md*"
+            "SidecarFilename": "*15T.dwi_negPE*"
             }
         },
 	{
@@ -132,18 +133,18 @@
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "FA",
+        "modalityLabel": "DWInegPE",
         "customLabels": "7T_preop",
         "criteria": {
-            "SidecarFilename": "*7T.fa*"
+            "SidecarFilename": "*7T.dwi.*"
             }
         },
 	{	
         "dataType": "dwi",
-        "modalityLabel": "MD",
+        "modalityLabel": "DWInegPE",
         "customLabels": "7T_preop",
         "criteria": {
-            "SidecarFilename": "*7T.md*"
+            "SidecarFilename": "*7T.dwi_negPE*"
             }
         }
     ]
