@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     #information about meld_template 
     strengths=['15T', '3T', '7T']
-    modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
+    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi']
     
     #get participants folder 
     participants_folder = os.path.join(meld_folder,'participants')
@@ -57,11 +57,15 @@ if __name__ == '__main__':
                     if files_nii:
                         print(f'WARNING: Nifti file already exist in folder {dcm_folder}')
                     else:
-                        command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
+                        command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder} -v n")
                         f = os.path.join(dcm_folder,name_nii) 
                         try:
-                            sub.check_call(command1, shell=True)
+                            if args.verbose:
+                                sub.check_call(command1, shell=True)
+                            else:
+                                sub.check_call(command1, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         except:
-                            print('Error in converting dicom into nifti. Check that your files are DICOMs format')
+                            #print('Error in converting dicom into nifti. Check that your files are DICOMs format')
+                            pass
     #print information
     print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')

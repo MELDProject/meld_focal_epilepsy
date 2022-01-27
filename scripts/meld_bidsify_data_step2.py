@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     #information about meld_template 
     strenghts=['15T', '3T', '7T']
-    modalities = ['t1','postop_t1', 't2', 'flair', 'md', 'fa']
+    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi']
     
     #create a meldBIDS folder with today date
     now =  datetime.now()
