@@ -37,7 +37,7 @@ if __name__ == '__main__':
     print('MELD_bidsify STEP 1 : convert dicoms into nifti')
     #loop over participants
     for participant in participants:
-        print(f'start process for {participant}')
+        print(f'INFO: start process for {participant}')
 
         # load in path of the specific participant
         path = os.path.join(participants_folder, participant)
@@ -47,9 +47,7 @@ if __name__ == '__main__':
             for mod in modalities:
                 dcm_folder=os.path.join(path,T,mod)
                 if not os.path.isdir(dcm_folder):
-                    print(f'folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
-                elif  len(os.listdir(dcm_folder))==1 and os.listdir(dcm_folder)[0]=='.gitkeep':
-                    pass
+                    print(f'WARNING: folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
                 else:
                     files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
                     files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm*'))
@@ -64,8 +62,26 @@ if __name__ == '__main__':
                             sub.check_call(command1, shell=True)
                         else:
                             sub.check_call(command1, shell=True, stdout=sub.DEVNULL, stderr=sub.DEVNULL)
-                        print(f'convert dcm in nifti {f}')
+                        print(f'INFO: convert dcm in nifti {f}')
                     else:
                         pass
+                    if mod=='flair':
+                        print(f'INFO: Co-register FLAIR to T1 {T} for lesion masking')
+                        files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
+                        if 'coreg' in '-'.join(files_nii) :
+                            print('INFO: FLAIR nifti file coregistered to T1 already exist. Skip')
+                            pass
+                        elif files_nii :
+                            f_flair= files_nii[0]
+                            f_flair_name_nii = name_base+'_coreg'+'.nii'
+                            f_t1 = files_nii=glob.glob(os.path.join(path,T, 't1','*.nii*'))[0]
+                            command1= format(f"flirt -in {f_flair} -ref {f_t1} -out {dcm_folder}/{f_flair_name_nii}")
+                            if args.verbose:
+                                sub.check_call(command1, shell=True)
+                            else:
+                                sub.check_call(command1, shell=True, stdout=sub.DEVNULL, stderr=sub.DEVNULL)
+                            print(f'INFO: Registration done and saved at {dcm_folder}/{f_flair_name_nii}. You can use the FLAIR coreg to help create the lesion mask')
+                        else:
+                            pass
     #print information
-    print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')
+    print('End of STEP 1. \n You can use the t1 nifti file (and flair coreg if available) to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')

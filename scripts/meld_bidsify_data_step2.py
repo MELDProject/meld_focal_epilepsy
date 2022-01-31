@@ -81,7 +81,7 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
     mod=T_mod[1]
     dcm_folder=os.path.join(path,T,mod)
     if not os.path.isdir(dcm_folder):
-        print(f'folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
+        print(f'WARNING: folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
     if not os.listdir(dcm_folder):
         pass
     else:
@@ -93,26 +93,32 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
         name_nii = name_base+'.nii'
         name_json = name_base+'.json'
         #if nifti file : copy nifti in tmp_dcm2bids and create fake json file
-        if (len(files_nii)>1) & (mod!='dwi') :
+        if (len(files_nii)>1) & (mod!='dwi') & (mod!='flair') :
             print(f'WARNING: There should be only one nifti file for modality {mod} at {T}. Check again and remove additional file.')
         elif len(files_nii)==0:
             print(f'WARNING: No files found for modality {mod} at {T}. Skip')
         else:
             for f in files_nii:
+                # skip process for the flair coregister file
+                if 'coreg' in f:
+                    print('INFO: skip process for FLAIR coreg')
+                    continue
+                # get the additional negPE file for dwi
                 if 'negPE' in f:
                     name_nii = name_base+'_negPE'+'.nii'
                     name_json = name_base+'_negPE'+'.json'
+                # deface file except if nodeface flag or if lesion mask
                 if (args.nodeface==True) or (mod == 'lesion_mask'):
                     command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
                     sub.check_call(command, shell=True)
-                    print(f'no deface. just copy nii {name_nii} in {tmp_folder_participant}')
+                    print(f'INFO : no deface. just copy nii {name_nii} in {tmp_folder_participant}')
                 else:
                     command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
                     try:   
                         sub.check_call(command, shell=True)
-                        print(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
+                        p<path_to_meld_focal_epilepsy_data_folder> rint(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
                     except:
-                        print('Error in defacing and copying nifti into temporary folder, please make sure FSL is installed')
+                        print('ERROR : Error in defacing and copying nifti into temporary folder, please make sure FSL is installed')
                 #if json file available copy it. If not create a fake one
                 if len(files_json)>1:
                     print('WARNING: There should be only one json file. Check again and remove additional file.')
@@ -121,11 +127,11 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                     command = format(f'cp {fjson} {tmp_folder_participant}/{name_json}')
                     try:   
                         sub.check_call(command, shell=True)
-                        print(f'just copy json {name_json} in {tmp_folder_participant}')
+                        print(f'INFO: just copy json {name_json} in {tmp_folder_participant}')
                     except:
-                        print('Error in copying json into temporary folder')
+                        print('ERROR: Error in copying json into temporary folder')
                 else:
-                    print('Creation of a json file into temporary folder')
+                    print('INFO: Creation of a json file into temporary folder')
                     info={}
                     info['strength']=T
                     json_file = os.path.join(tmp_folder_participant,name_json)
@@ -144,11 +150,11 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                     command2 = format(f'cp {fbvec} {tmp_folder_participant}/{name_bvec}')
                     try:   
                         sub.check_call(command1, shell=True)
-                        print(f'just copy bval file {name_bval} in {tmp_folder_participant}')
+                        print(f'INFO: just copy bval file {name_bval} in {tmp_folder_participant}')
                         sub.check_call(command2, shell=True)
-                        print(f'just copy bvec file {name_bvec} in {tmp_folder_participant}')
+                        print(f'INFO:just copy bvec file {name_bvec} in {tmp_folder_participant}')
                     except:
-                        print('Error in copying bval or bvec into temporary folder')
+                        print('ERROR: Error in copying bval or bvec into temporary folder')
                     
                     
     return 
@@ -229,22 +235,22 @@ if __name__ == '__main__':
             os.makedirs(tmp_folder_participant)
         
         # Parallelise for each strenght_modality (n_jobs=1 means: use all available cores)
-        print(f'Parallelise defacing with {str(args.njobs)} jobs')
+        print(f'INFO: Parallelise defacing with {str(args.njobs)} jobs')
         element_information = Parallel(n_jobs=int(args.njobs))(delayed(deface_and_sort_nii)(node, path, tmp_folder_participant) for node in T_mod)
         #convert in bids structure using dcm2bids
         config_file = os.path.join(meld_folder,'meld_dcm2bids_config.json')
         command=format(f'dcm2bids -d {participants_folder} -p {participant_bids} -c {config_file} -o {bids_folder}')
         try:
             sub.check_call(command, shell=True)
-            print('convert into bids structure')
+            print('INFO: convert into bids structure')
         except:
-            print('Error in converting in bids structure')
+            print('ERROR: Error in converting in bids structure')
         
         #delete tmp folder 
         shutil.rmtree(tmp_folder)
         
         #compression in batch
-        print(f'Compress {bids_folder}')
+        print(f'INFO: Compress {bids_folder}')
         command=format(f'cd {meld_folder}/meld_bids ; zip -r {folder_name} {folder_name} ; split -b 800M {folder_name}.zip share_data_part_')
         sub.check_call(command, shell=True)
         
