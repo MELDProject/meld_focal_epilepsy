@@ -35,6 +35,14 @@
             }
         },
 	{	
+        "dataType": "anat",
+        "modalityLabel": "MASK",
+        "customLabels": "3T_lesion",
+        "criteria": {
+            "SidecarFilename": "*3T.lesion_mask*"
+            }
+        },
+	{	
         "dataType": "dwi",
         "modalityLabel": "DWI",
         "customLabels": "3T_preop",
@@ -84,6 +92,14 @@
             }
         },
 	{	
+        "dataType": "anat",
+        "modalityLabel": "MASK",
+        "customLabels": "15T_lesion",
+        "criteria": {
+            "SidecarFilename": "*15T.lesion_mask*"
+            }
+        },
+	{	
         "dataType": "dwi",
         "modalityLabel": "DWI",
         "customLabels": "15T_preop",
@@ -129,6 +145,14 @@
         "customLabels": "7T_preop",
         "criteria": {
             "SidecarFilename": "*7T.flair*"
+            }
+        },
+	{	
+        "dataType": "anat",
+        "modalityLabel": "MASK",
+        "customLabels": "7T_lesion",
+        "criteria": {
+            "SidecarFilename": "*7T.lesion_mask*"
             }
         },
 	{	

@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Script to bidsify MELD data. PART 1 : convert DICOMs into NIFTI')
     parser.add_argument('-d','--meld_folder', 
-                        help='path to the meld_focal_epilepsy folder', 
+                        help='path to the meld_focal_epilepsy_data folder containing data', 
                         required=True)
     parser.add_argument('-v','--verbose', 
                         help='print issues',action='store_true',
@@ -52,20 +52,20 @@ if __name__ == '__main__':
                     pass
                 else:
                     files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
+                    files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm*'))
                     name_base = '.'.join([T,mod])
                     name_nii = name_base+'.nii'
                     if files_nii:
                         print(f'WARNING: Nifti file already exist in folder {dcm_folder}')
-                    else:
-                        command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder} -v n")
+                    elif files_dcm:
+                        command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
                         f = os.path.join(dcm_folder,name_nii) 
-                        try:
-                            if args.verbose:
-                                sub.check_call(command1, shell=True)
-                            else:
-                                sub.check_call(command1, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                        except:
-                            #print('Error in converting dicom into nifti. Check that your files are DICOMs format')
-                            pass
+                        if args.verbose:
+                            sub.check_call(command1, shell=True)
+                        else:
+                            sub.check_call(command1, shell=True, stdout=sub.DEVNULL, stderr=sub.DEVNULL)
+                        print(f'convert dcm in nifti {f}')
+                    else:
+                        pass
     #print information
     print('End of STEP 1. \n You can use the nifti file to create the lesion. \n Place the nifti lesion file into the lesion_mask folder')

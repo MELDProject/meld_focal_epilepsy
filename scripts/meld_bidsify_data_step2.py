@@ -94,15 +94,15 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
         name_json = name_base+'.json'
         #if nifti file : copy nifti in tmp_dcm2bids and create fake json file
         if (len(files_nii)>1) & (mod!='dwi') :
-            print(f'WARNING: There should be only one nifti file for modality {mod} at {strenght}. Check again and remove additional file.')
+            print(f'WARNING: There should be only one nifti file for modality {mod} at {T}. Check again and remove additional file.')
         elif len(files_nii)==0:
-            print(f'WARNING: No files found for modality {mod} at {strenght}. Skip')
+            print(f'WARNING: No files found for modality {mod} at {T}. Skip')
         else:
             for f in files_nii:
                 if 'negPE' in f:
                     name_nii = name_base+'_negPE'+'.nii'
                     name_json = name_base+'_negPE'+'.json'
-                if args.nodeface==True:
+                if (args.nodeface==True) or (mod == 'lesion_mask'):
                     command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
                     sub.check_call(command, shell=True)
                     print(f'no deface. just copy nii {name_nii} in {tmp_folder_participant}')
@@ -134,7 +134,7 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
             if mod=='dwi':
                 if (len(files_bval)<1) or (len(files_bvec)<1):
                     print(f'WARNING: missing files bvec and bvals for modality dwi. Please check files \
-                    are in the right folder {strenght}/{mod}')
+                    are in the right folder {T}/{mod}')
                 else:
                     name_bval = name_base+'.bval'
                     name_bvec = name_base+'.bvec'
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     
     #information about meld_template 
     strenghts=['15T', '3T', '7T']
-    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi']
+    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi', 'lesion_mask']
     T_mod = list(itertools.product(*[strenghts,modalities]))
     
     #create a meldBIDS folder with today date
@@ -232,7 +232,7 @@ if __name__ == '__main__':
         print(f'Parallelise defacing with {str(args.njobs)} jobs')
         element_information = Parallel(n_jobs=int(args.njobs))(delayed(deface_and_sort_nii)(node, path, tmp_folder_participant) for node in T_mod)
         #convert in bids structure using dcm2bids
-        config_file = os.path.join(meld_folder,'scripts','meld_dcm2bids_config.json')
+        config_file = os.path.join(meld_folder,'meld_dcm2bids_config.json')
         command=format(f'dcm2bids -d {participants_folder} -p {participant_bids} -c {config_file} -o {bids_folder}')
         try:
             sub.check_call(command, shell=True)
