@@ -86,16 +86,9 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
         pass
     else:
         files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
-        files_json=glob.glob(os.path.join(dcm_folder,'*.json'))
-        files_bvec=glob.glob(os.path.join(dcm_folder,'*.bvec'))   # for dwi files
-        files_bval=glob.glob(os.path.join(dcm_folder,'*.bval'))   # for dwi files
         name_base = '.'.join([T,mod])
-        name_nii = name_base+'.nii'
-        name_json = name_base+'.json'
         #if nifti file : copy nifti in tmp_dcm2bids and create fake json file
-        if (len(files_nii)>1) & (mod!='dwi') & (mod!='flair') :
-            print(f'WARNING: There should be only one nifti file for modality {mod} at {T}. Check again and remove additional file.')
-        elif len(files_nii)==0:
+        if len(files_nii)==0:
             print(f'WARNING: No files found for modality {mod} at {T}. Skip')
         else:
             for f in files_nii:
@@ -105,8 +98,11 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                     continue
                 # get the additional negPE file for dwi
                 if 'negPE' in f:
-                    name_nii = name_base+'_negPE'+'.nii'
+                    name_nii = name_base+'_negPE'+'.nii.gz'
                     name_json = name_base+'_negPE'+'.json'
+                else:
+                    name_nii = name_base+'.nii.gz'
+                    name_json = name_base+'.json'
                 # deface file except if nodeface flag or if lesion mask
                 if (args.nodeface==True) or (mod == 'lesion_mask'):
                     command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
@@ -116,15 +112,16 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                     command = format(f'pydeface --outfile {tmp_folder_participant}/{name_nii} {f} ')
                     try:   
                         sub.check_call(command, shell=True)
-                        p<path_to_meld_focal_epilepsy_data_folder> rint(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
+                        print(f'deface nifti {name_nii} and copy in {tmp_folder_participant}')
                     except:
                         print('ERROR : Error in defacing and copying nifti into temporary folder, please make sure FSL is installed')
                 #if json file available copy it. If not create a fake one
-                if len(files_json)>1:
-                    print('WARNING: There should be only one json file. Check again and remove additional file.')
-                elif len(files_json)==1:
-                    fjson = files_json[0] 
+                nii_base = f.split('.nii')[0]
+                fjson = nii_base+'.json'
+                print(fjson)
+                if os.path.isfile(fjson):
                     command = format(f'cp {fjson} {tmp_folder_participant}/{name_json}')
+                    print(command)
                     try:   
                         sub.check_call(command, shell=True)
                         print(f'INFO: just copy json {name_json} in {tmp_folder_participant}')
@@ -137,6 +134,8 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                     json_file = os.path.join(tmp_folder_participant,name_json)
                     create_json_file(json_file,info)
             #if dwi modality, copy bval and bvec
+            files_bvec=glob.glob(os.path.join(dcm_folder,'*.bvec'))   # for dwi files
+            files_bval=glob.glob(os.path.join(dcm_folder,'*.bval'))   # for dwi files
             if mod=='dwi':
                 if (len(files_bval)<1) or (len(files_bvec)<1):
                     print(f'WARNING: missing files bvec and bvals for modality dwi. Please check files \
@@ -193,7 +192,7 @@ if __name__ == '__main__':
     
     #information about meld_template 
     strenghts=['15T', '3T', '7T']
-    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi', 'lesion_mask']
+    modalities = ['t1','postop_t1', 't2', 'flair', 'dwi','lesion_mask']
     T_mod = list(itertools.product(*[strenghts,modalities]))
     
     #create a meldBIDS folder with today date
@@ -213,12 +212,13 @@ if __name__ == '__main__':
     f = open(list_participants, 'r')
     participants = f.readlines()
     participants = [x.strip() for x in participants] 
-    
+    print(participants)
+
     #print information
     print('MELD_bidsify STEP 2 : Deface nifti, convert into BIDS format and create compressed batch files.')
     
     #get participants folder 
-    participants_folder = path = os.path.join(meld_folder,'participants')
+    participants_folder = os.path.join(meld_folder,'participants')
     
     #loop over participants
     for participant in participants:
