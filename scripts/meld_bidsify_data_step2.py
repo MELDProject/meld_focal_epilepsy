@@ -82,7 +82,7 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
     dcm_folder=os.path.join(path,T,mod)
     if not os.path.isdir(dcm_folder):
         print(f'WARNING: folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
-    if not os.listdir(dcm_folder):
+    elif not os.listdir(dcm_folder):
         pass
     else:
         files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
