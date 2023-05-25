@@ -9,5 +9,5 @@ dependencies:
   - dcm2niix
   - pip
   - pip:
-      - pydeface==2.0
+      - pydeface==2.0.2
       - joblib==1.1
