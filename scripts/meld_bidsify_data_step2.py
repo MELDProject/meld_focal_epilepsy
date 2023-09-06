@@ -103,6 +103,11 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                 else:
                     name_nii = name_base+'.nii.gz'
                     name_json = name_base+'.json'
+		# gzip file if not zipped
+                if not '.nii.gz' in f:
+                    command = format(f'gzip {f}')
+                    sub.check_call(command, shell=True)
+                    f = f+'.gz'
                 # deface file except if nodeface flag or if lesion mask
                 if (args.nodeface==True) or (mod == 'lesion_mask'):
                     command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
@@ -251,7 +256,7 @@ if __name__ == '__main__':
         
         #compression in batch
         print(f'INFO: Compress {bids_folder}')
-        command=format(f'cd {meld_folder}/meld_bids ; zip -r {folder_name} {folder_name} ; split -b 800M {folder_name}.zip share_data_part_')
+        command=format(f'cd {meld_folder}/meld_bids ; zip -r {folder_name} {folder_name} ; split -b 800000000  {folder_name}.zip share_data_part_')
         sub.check_call(command, shell=True)
         
         # do not delete meldbids folder if flag
