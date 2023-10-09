@@ -3,12 +3,13 @@ import subprocess as sub
 import glob 
 import json
 import argparse
-import pandas as pd
 import shutil
 import itertools
 from joblib import Parallel, delayed
 from datetime import datetime
 import logging
+import gzip
+import sys
 
 
 #functions
@@ -75,7 +76,33 @@ def create_json_file(name, info):
     with open(name, 'w') as outfile:
         json.dump(dictionary, outfile)
 
-        
+def check_gzip(file):
+    # ensure file are gzip, or gzip
+    if '.nii.gz' in file:
+        try:
+            with gzip.open(file, 'rb') as f:
+                data = f.read(10)  # Read the first 10 bytes (adjust as needed)
+        except OSError as e:
+            if "Not a gzipped file" in str(e):
+                print(f"ERROR: The file '{file}' has the suffix '.nii.gz. but is not genuinely compressed using gzip. Check that you have the right format and rerun")
+            elif "No such file" in str(e):
+                print(f"ERROR: The file '{file}' was not found.")
+            else:
+                print(f"ERROR: An error occurred: {e}")
+            sys.exit()
+    else:
+        try:
+            with gzip.open(file, 'rb') as f:
+                data = f.read(10)  # Read the first 10 bytes (adjust as needed)
+            print(f"ERROR: The file '{file}' is compressed using gzip but does not have the right suffix '.nii.gz' ")
+            sys.exit()
+        except OSError as e:
+            if "Not a gzipped file" in str(e):
+                command = format(f'gzip {file}')
+                sub.check_call(command, shell=True)
+                file = file+'.gz'
+    return file
+      
 def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
     T=T_mod[0]
     mod=T_mod[1]
@@ -103,11 +130,8 @@ def deface_and_sort_nii(T_mod, path, tmp_folder_participant):
                 else:
                     name_nii = name_base+'.nii.gz'
                     name_json = name_base+'.json'
-		# gzip file if not zipped
-                if not '.nii.gz' in f:
-                    command = format(f'gzip {f}')
-                    sub.check_call(command, shell=True)
-                    f = f+'.gz'
+                # check gzip
+                f = check_gzip(f)
                 # deface file except if nodeface flag or if lesion mask
                 if (args.nodeface==True) or (mod == 'lesion_mask'):
                     command = format(f'cp {f} {tmp_folder_participant}/{name_nii}')
