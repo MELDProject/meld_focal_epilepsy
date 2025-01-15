@@ -50,21 +50,22 @@ if __name__ == '__main__':
                     print(f'WARNING: folder {dcm_folder} does not exist. Check your participant folder is similar to the meld_template')
                 else:
                     files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
-                    files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm*'))
+                    #files_dcm=glob.glob(os.path.join(dcm_folder,'*.dcm*'))
                     name_base = '.'.join([T,mod])
                     name_nii = name_base+'.nii'
                     if files_nii:
                         print(f'WARNING: Nifti file already exist in folder {dcm_folder}')
-                    elif files_dcm:
-                        command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
-                        f = os.path.join(dcm_folder,name_nii) 
-                        if args.verbose:
-                            sub.check_call(command1, shell=True)
-                        else:
-                            sub.check_call(command1, shell=True, stdout=sub.DEVNULL, stderr=sub.DEVNULL)
-                        print(f'INFO: convert dcm in nifti {f}')
                     else:
-                        pass
+                        try:
+                            command1= format(f"dcm2niix -f {name_base} -o {dcm_folder} {dcm_folder}")
+                            f = os.path.join(dcm_folder,name_nii) 
+                            if args.verbose:
+                                sub.check_call(command1, shell=True)
+                            else:
+                                sub.check_call(command1, shell=True, stdout=sub.DEVNULL, stderr=sub.DEVNULL)
+                            print(f'INFO: convert dcm in nifti {f}')
+                        except Exception as e:
+                            print(f'Error in converting dicoms to nifti: {e}')
                     if mod=='flair':
                         print(f'INFO: Co-register FLAIR to T1 {T} for lesion masking')
                         files_nii=glob.glob(os.path.join(dcm_folder,'*.nii*'))
